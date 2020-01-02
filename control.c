@@ -28,27 +28,23 @@ int main(int element, char** args_array) {
       return 0;
     }
 
-    if (strcmp(args_array[1], "-r") == 0) {
+    if (strcmp(args_array[1], "-v") == 0) {
       //do -r things here
-      printf("TEST: you typed in -r.\n");
+      printf("TEST: you typed in -v.\n");
       return 0;
     }
 
-    if (strcmp(args_array[1], "-v") == 0) {
+    if (strcmp(args_array[1], "-r") == 0) {
       //do -v things here
       //printf("TEST: you typed in -v.\n");
       int fd_story = -1;
-      fd_story = open("story.txt", O_RDONLY, 0666);
+      fd_story = open("story.txt", O_RDONLY | O_CREAT, 0666);
 
       if (fd_story == -1) {
         printf("Error encountered: %i, %s\n", errno, strerror(errno));
       }
 
-      else {
-        printf("File opened successfully.\n");
-      }
-
-      printf("Printing file contents.\n\n");
+      printf("Printing story contents.\n\n");
 
       int fd_stdin_backup = dup(stdin);
       dup2(fd_story, 0);
