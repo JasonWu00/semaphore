@@ -4,6 +4,10 @@
 
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <sys/types.h>
+#include <errno.h>
+
+#define KEY 40000
 
 int main() {
   
