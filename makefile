@@ -1,14 +1,9 @@
-all: main.o
-	gcc -o control main.c
+all: control.o write.o
+	gcc -o control control.c
+	gcc -o write write.c
 
-main.o: main.c
-	gcc -c main.c
+control.o: control.c
+	gcc -c control.c
 
-run -c:
-	./control -c
-
-run -r:
-	./control -r
-
-run -v:
-	./control -v
+write.o: write.c
+	gcc -c write.c
