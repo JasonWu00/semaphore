@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -8,7 +9,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "control.h"
 
 #define KEY 40000
 #define SEGSIZE 100
@@ -56,12 +56,12 @@ void print_file_contents() {
 
     int fd_stdin_backup = dup(stdin);
     dup2(fd_story, 0);
-    char file[500];
+    char file[100];
 
-    FILE *fp = fgets(file, 500, stdin);
+    FILE *fp = fgets(file, 100, stdin);
     while (fp != NULL) {
       printf("%s", file);
-      fp = fgets(file, 500, stdin);
+      fp = fgets(file, 100, stdin);
     }
 
     dup2(fd_stdin_backup, 0);
@@ -84,10 +84,10 @@ void return_last_line(char output[100]) {
     int fd_stdin_backup = dup(stdin);
     dup2(fd_story, 0);
 
-    FILE *fp = fgets(file, 500, stdin);
+    FILE *fp = fgets(file, 100, stdin);
     while (fp != NULL) {
       //printf("%s", file);
-      fp = fgets(file, 500, stdin);
+      fp = fgets(file, 100, stdin);
     }
     dup2(fd_stdin_backup, 0);
   }
