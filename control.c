@@ -8,16 +8,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <sys/sem.h>
 
 #define KEY 40000
 #define SEGSIZE 100
-
-union semun {
-  int val;
-  struct semid_ds *buf;
-  unsigned short *array;
-  struct seminfo *__buf;
-};
 
 int main(int element, char** args_array) {
   //printf("test\n");
@@ -29,18 +23,14 @@ int main(int element, char** args_array) {
   }
 
   else {//argument included
-    int sem_identifier = -1;
     int shared_mem_identifier = -1;
 
     if (strcmp(args_array[1], "-c") == 0) {//create file
       //do -c things here
       //printf("TEST: you typed in -c.\n");
-      int fd_story = -1;
-      fd_story = open("story.txt", O_RDONLY | O_TRUNC | O_CREAT, 0644);//makes the file
-      printf("File made\n");
 
-      sem_identifier = semget(KEY, 1, IPC_CREAT | IPC_EXCL | 0644);//makes the semaphore
-      if (sem_identifier = -1) {//semget failed
+      int sem_identifier = semget(KEY, 1, IPC_CREAT | IPC_EXCL | 0644);//makes the semaphore
+      if (sem_identifier == -1) {//semget failed
         printf("Error encountered: %i, %s\n", errno, strerror(errno));
         printf("A debug is probably needed.\n");
       }
@@ -48,9 +38,12 @@ int main(int element, char** args_array) {
         printf("Semaphore made\n");
       }
 
+      int fd_story = -1;
+      fd_story = open("story.txt", O_RDONLY | O_TRUNC | O_CREAT, 0644);//makes the file
+      printf("File made\n");
+
       shared_mem_identifier = shmget(KEY, SEGSIZE, IPC_CREAT | 0644);//makes the shared mem
       printf("Shared memory made\n");
-      char* data = shmat(shared_mem_identifier, 0, 0);
 
       return 0;
     }
@@ -61,6 +54,7 @@ int main(int element, char** args_array) {
       printf("The story, before it is deleted:\n\n");
       print_file_contents();
       printf("Removing everything.\n");
+      int sem_identifier = semget(KEY, 1, 0);
       semctl(sem_identifier, IPC_RMID, 0);
       shmctl(shared_mem_identifier, IPC_RMID, 0);
       printf("Semaphore, shared segment, and file removed.");
